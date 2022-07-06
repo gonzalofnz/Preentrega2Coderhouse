@@ -1,38 +1,13 @@
-const items = document.getElementById('items')
-const templateCard = document.getElementById('template-card').content 
-
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    fetchData()
-    localStorage.setItem("products",JSON.stringify(carrito));
-    carrito =JSON.parse(localStorage.getItem("products")); 
-    console.log(carrito)
-    precioTotal =JSON.parse(localStorage.getItem("price"))
-}) 
-
+//FETCH USADO CON EL FIN DE CONECTARLO A api.json 
 const fetchData = async () => {
     try {
         const res = await fetch('api.json')
         const data = await res.json()
         console.log(data)
-        pintarCards(data)
     } catch (error) {
         console.log(error)
     }
 }
-
-const pintarCards = data => {
-    data.forEach(producto => {
-        templateCard.querySelector('h5').textContent = producto.title
-        templateCard.querySelector('p').textContent = producto.precio
-        const clone = templateCard.cloneNode(true)
-        
-    })
-   
-}
-
 
 // Array de productos
 const productos = {
@@ -73,24 +48,12 @@ const productos = {
         srcImg: 'https://www.fullh4rd.com.ar/img/productos/Pics_Prod/monitor-gamer-24-samsung-g35-odyssey-144hz-0.jpg'
       }
   }
-  // Se captura el template de los productos
+  // Capturo el template de los productos
   const templateProd = document.getElementById('template-prod').content
   const contenedorProd = document.querySelector('.contenedor-productos')
   const fragment = document.createDocumentFragment()
-  
-  
-  // TODO LO RELACIONADO A AGREGAR LOS PRODUCTOS AL DOM
-  Object.values(productos).forEach( producto => {
-    templateProd.querySelector('.div-info .nombre-prod').textContent = producto.nombre
-    templateProd.querySelector('.div-precio-boton .precio').textContent = producto.precio
-    templateProd.querySelector('.div-info .descripcion-prod').textContent = producto.descripcion
-    templateProd.querySelector('.contenedor-img img').setAttribute('alt', producto.nombre)
-    templateProd.querySelector('.contenedor-img img').setAttribute('src', producto.srcImg)
-    const clone = templateProd.cloneNode(true)
-    fragment.appendChild(clone)
-  })
-  contenedorProd.appendChild(fragment)
-  
+
+
   // TODO LO RELACIONADO AL CARRITO DE COMPRA
   let carrito = {}
   const templateTabla = document.getElementById('agregar-producto-al-carro').content
@@ -98,6 +61,26 @@ const productos = {
   const fragmentTabla = document.createDocumentFragment()
   const templateFoot = document.getElementById('tfooter').content
   const tfootCarrito = document.getElementById('footer')
+  
+  
+  document.addEventListener('DOMContentLoaded', e => {
+    fetchData()
+    if (localStorage.getItem('carrito')) {
+        carrito = JSON.parse(localStorage.getItem('carrito'))
+    }
+});
+// ESTO ES TODO LO RELACIONADO A AGREGAR LOS PRODUCTOS AL DOM
+    Object.values(productos).forEach( producto => {
+      templateProd.querySelector('.div-info .nombre-prod').textContent = producto.nombre
+      templateProd.querySelector('.div-precio-boton .precio').textContent = producto.precio
+      templateProd.querySelector('.div-info .descripcion-prod').textContent = producto.descripcion
+      templateProd.querySelector('.contenedor-img img').setAttribute('alt', producto.nombre)
+      templateProd.querySelector('.contenedor-img img').setAttribute('src', producto.srcImg)
+      const clone = templateProd.cloneNode(true)
+      fragment.appendChild(clone)
+    })
+    contenedorProd.appendChild(fragment)
+    localStorage.setItem('carrito', JSON.stringify(carrito))
   
   contenedorProd.addEventListener('click', e => {
     
